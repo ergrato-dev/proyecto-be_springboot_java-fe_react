@@ -41,7 +41,7 @@
 | JUnit 5                        | (incluido) | Framework de testing                                  |
 | Mockito                        | (incluido) | Mocks para tests unitarios                            |
 | Spring MockMvc / WebTestClient | (incluido) | Tests de integración de controllers                   |
-| Testcontainers (PostgreSQL)    | latest     | PostgreSQL efímero para tests                         |
+| PostgreSQL de pruebas (db-test)| 17-alpine  | BD desechable para tests (docker compose, puerto 5433) |
 | JaCoCo                         | latest     | Medición de cobertura de código                       |
 | Checkstyle                     | latest     | Linter de estilo de código Java                       |
 
@@ -317,7 +317,7 @@ proyecto-be_springboot_java-fe_react/                  # Raíz del monorepo
 │   │   │           └── V3__create_email_verification_tokens_table.sql
 │   │   └── test/java/com/nn/auth/
 │   │       └── controller/
-│   │           └── AuthControllerTest.java             # Tests MockMvc + Testcontainers
+│   │           └── AuthControllerTest.java             # Tests MockMvc + BD de pruebas
 │   ├── .env                       # Variables de entorno (NO versionado)
 │   ├── .env.example               # Plantilla de variables
 │   ├── pom.xml                    # Dependencias y plugins Maven
@@ -544,11 +544,11 @@ No se considera "terminada" una feature hasta que sus tests pasen.
 | JUnit 5                     | Framework principal de testing          |
 | Mockito                     | Mocks para tests unitarios de servicios |
 | Spring MockMvc              | Tests de integración de controllers     |
-| Testcontainers (PostgreSQL) | BD real para tests de integración       |
+| PostgreSQL de pruebas (db-test) | BD real para tests de integración |
 | JaCoCo                      | Medir cobertura de código               |
 
 ```bash
-# Ejecutar todos los tests del backend (requiere Docker para Testcontainers)
+# Ejecutar todos los tests del backend (requiere db-test y TEST_DATABASE_URL)
 cd be && ./mvnw test
 
 # Ejecutar con reporte de cobertura JaCoCo
@@ -1011,7 +1011,7 @@ tiene un color de acento único que identifica su stack. Los componentes React
 
 ### Fase 4 — Tests Backend
 
-- [ ] Configurar Testcontainers (PostgreSQL efímero para tests)
+- [ ] Configurar la BD de pruebas (servicio db-test + TEST_DATABASE_URL)
 - [ ] Crear `AuthControllerTest.java` — tests completos con MockMvc
 - [ ] ✅ Verificar: `./mvnw test` → todos los tests pasan, cobertura ≥80%
 
@@ -1068,7 +1068,7 @@ cd be && ./mvnw spring-boot:run
 # 3. Levantar frontend (en otra terminal)
 cd fe && pnpm dev
 
-# 4. Ejecutar tests backend (requiere Docker para Testcontainers)
+# 4. Ejecutar tests backend (requiere db-test y TEST_DATABASE_URL)
 cd be && ./mvnw verify
 
 # 5. Ejecutar tests frontend

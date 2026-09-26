@@ -2,7 +2,7 @@
 
 > Proyecto: NN Auth System
 > Stack: Spring Boot 3 (Java 21) + React 19 (TypeScript) + PostgreSQL 17 + Docker
-> Tests: ✅ completados — BE: 29 tests (JUnit 5 + MockMvc + Testcontainers) | FE: 37 tests (Vitest + Testing Library)
+> Tests: ✅ completados — BE: 32 tests (29 MockMvc + 3 unitarios de JwtService) | E2E: 3 (Playwright) | FE: 42 tests (Vitest + Testing Library)
 >
 > **Referencia:** Arquitectura equivalente a [proyecto-be_fastapi-fe_react](https://github.com/ergrato-dev/proyecto-be_fastapi-fe_react)
 > (FastAPI + React). Misma funcionalidad, diferente implementación de backend.
@@ -82,7 +82,7 @@ responsabilidad única y se comunica solo con la capa adyacente:
 | Inyección deps.  | `Depends()` de FastAPI          | `@Autowired` / `@RequiredArgsConstructor` de Spring |
 | Config           | Pydantic Settings               | `@ConfigurationProperties` + `application.yml` |
 | Logging          | Python logging (structlog)      | SLF4J + Logback (JSON estructurado)     |
-| Testing          | pytest + httpx                  | JUnit 5 + MockMvc + Testcontainers      |
+| Testing          | pytest + httpx                  | JUnit 5 + MockMvc + BD de pruebas       |
 
 ### Estructura de capas
 

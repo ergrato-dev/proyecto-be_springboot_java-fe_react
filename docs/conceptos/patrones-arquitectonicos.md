@@ -573,4 +573,4 @@ Cada patrón resuelve un problema específico. Juntos, hacen que el sistema sea:
 - **Seguro** — DTO + JWT + BCrypt + Bucket4j (rate limiting)
 - **Mantenible** — Capas + DI + CustomHook + Convenciones Java
 - **Escalable** — Stateless + REST + Monorepo + JAR ejecutable
-- **Testeable** — DI override + Mockito + Testcontainers + JaCoCo ≥80%
+- **Testeable** — DI override + Mockito + BD de pruebas (db-test) + JaCoCo

@@ -17,6 +17,11 @@ fe/.env
 fe/.env.local
 fe/.env.*.local
 
+# ── E2E / Playwright ───────────────────────────────────────────────────────────
+e2e/node_modules/
+e2e/test-results/
+e2e/playwright-report/
+
 # ── Entornos de desarrollo ─────────────────────────────────────────────────────
 .env
 .env.local

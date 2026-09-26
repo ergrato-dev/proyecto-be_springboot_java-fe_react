@@ -56,10 +56,10 @@ base de datos) y no solo la apariencia.
 | **Email (dev)** | Mailpit — captura SMTP local, UI en puerto 8025                             |
 | **Rate Limiting** | Bucket4j 8.x — límite por IP en endpoints de auth                        |
 | **Documentación API** | SpringDoc OpenAPI 2.8.9 (Swagger UI en `/swagger-ui.html`)         |
-| **Testing BE**  | JUnit 5 + MockMvc + Testcontainers → 29 tests                              |
-| **Testing FE**  | Vitest 4.1.3 + Testing Library React 16.3.2 → 37 tests (6 suites)         |
+| **Testing BE**  | JUnit 5 + MockMvc + PostgreSQL de pruebas (db-test) → 32 tests            |
+| **Testing FE**  | Vitest 4.1.3 + Testing Library React 16.3.2 → 42 tests (6 suites)         |
 | **Linting**     | Checkstyle (Java), ESLint 10 + Prettier 3.8.1 (TypeScript)                 |
-| **Build**       | Maven Wrapper (`./mvnw`) para BE, pnpm 10 para FE                          |
+| **Build**       | Maven Wrapper (`./mvnw`) para BE, pnpm 11 para FE                          |
 
 ---
 
@@ -88,7 +88,7 @@ Antes de comenzar, asegúrate de tener instalado:
 ```bash
 # Opción recomendada — vía corepack (incluido con Node.js 16+)
 corepack enable
-corepack prepare pnpm@latest --activate
+corepack prepare pnpm@11.20.0 --activate
 
 # Alternativa — instalación independiente
 curl -fsSL https://get.pnpm.io/install.sh | sh -
@@ -244,12 +244,19 @@ cd fe && pnpm dev
 
 ## 🧪 Testing
 
+> 🔎 Este proyecto tiene defectos reales documentados para practicar testing en clase:
+> [`docs/testing/hallazgos.md`](docs/testing/hallazgos.md).
+
 ### Backend
 
 ```bash
-cd be
+# BD de pruebas desechable (una vez por sesión de trabajo)
+docker compose up -d --wait db-test
 
-# Ejecutar todos los tests (requiere Docker para levantar PostgreSQL con Testcontainers)
+cd be
+export TEST_DATABASE_URL='jdbc:postgresql://localhost:5433/nn_auth_test?user=nn_user&password=nn_password'
+
+# Ejecutar todos los tests
 ./mvnw test
 
 # Ejecutar con reporte de cobertura (JaCoCo)
@@ -262,8 +269,9 @@ cd be
 ./mvnw test -Dtest=AuthControllerTest
 ```
 
-> ⚠️ Los tests del backend usan **Testcontainers** para levantar una instancia efímera
-> de PostgreSQL. Se requiere que Docker esté corriendo durante la ejecución de tests.
+> ⚠️ Los tests del backend usan una **BD exclusiva** (`db-test`, puerto 5433), nunca la de
+> desarrollo. La URL llega por `TEST_DATABASE_URL`: sin ella, el contexto de Spring no arranca
+> y los tests se detienen antes de conectarse.
 
 ### Frontend
 
@@ -279,6 +287,27 @@ pnpm test:watch
 # Ejecutar con cobertura
 pnpm test:coverage
 ```
+
+### E2E (Playwright)
+
+Prueban los flujos críticos en un navegador real: registro, verificación del correo (leído
+desde Mailpit), inicio de sesión y dashboard. Playwright compila y levanta el backend (Flyway
+migra la BD al arrancar) y el frontend por su cuenta; antes hay que levantar la BD de pruebas
+y Mailpit.
+
+```bash
+docker compose up -d --wait db-test mailpit
+
+cd e2e
+pnpm install
+pnpm exec playwright install chromium   # solo la primera vez
+
+pnpm test          # todos los E2E
+pnpm test:ui       # modo interactivo, paso a paso
+pnpm report        # reporte HTML de la última corrida
+```
+
+> Si los puertos 8080 o 5173 están ocupados: `API_PORT=8180 FRONT_PORT=5180 pnpm test`.
 
 ### Linting
 

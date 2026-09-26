@@ -1,21 +1,21 @@
 # Configuración de tests de integración
-# ¿Para qué? Sobreescribir la configuración base para tests — apunta a una BD
-#            de test separada (nn_auth_test_db) en el servidor de desarrollo.
-# ¿Impacto? Los tests usan una BD aislada (no la de desarrollo nn_auth_db)
-#           y @Transactional garantiza rollback automático entre tests para
-#           evitar contaminación de datos. Requiere: docker compose up -d.
+# ¿Para qué? Sobreescribir la configuración base para tests — apunta a la BD
+#            exclusiva de pruebas (servicio db-test, BD nn_auth_test).
+# ¿Impacto? Los tests nunca tocan el servidor de desarrollo (nn_auth_db) y
+#           @Transactional garantiza rollback automático entre tests para
+#           evitar contaminación de datos. Requiere: docker compose up -d --wait db-test.
 
 spring:
-  # BD de test separada en el mismo servidor PostgreSQL de desarrollo
+  # BD exclusiva para tests: servicio db-test del docker-compose.yml (puerto 5433).
   # ¿Por qué no Testcontainers? Docker Desktop en Linux no expone el daemon
   # con la API completa que Testcontainers requiere para iniciar contenedores.
-  # La BD nn_auth_test_db se crea con: docker exec nn_auth_db psql -U nn_user
-  # -d nn_auth_db -c "CREATE DATABASE nn_auth_test_db;"
+  # ¿Por qué una variable? La URL (con el usuario y la clave de la BD desechable)
+  # llega por TEST_DATABASE_URL, nunca escrita en este archivo. Sin la variable,
+  # el contexto no arranca y los tests se detienen antes de conectarse a nada:
+  #   TEST_DATABASE_URL=jdbc:postgresql://localhost:5433/nn_auth_test?user=nn_user&password=nn_password
   datasource:
-    url: jdbc:postgresql://localhost:5432/nn_auth_test_db
+    url: ${TEST_DATABASE_URL}
     driver-class-name: org.postgresql.Driver
-    username: nn_user
-    password: nn_password
 
   jpa:
     hibernate:
@@ -67,6 +67,5 @@ logging:
   level:
     com.nn.auth: DEBUG
     org.springframework.security: WARN
-    org.testcontainers: WARN
     com.zaxxer.hikari: WARN
     org.flywaydb: INFO

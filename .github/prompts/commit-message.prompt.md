@@ -47,7 +47,7 @@ El cuerpo (`For:` / `Impact:`) puede estar en inglés o español.
 | `security` | JWT, filtros, BCrypt, Bucket4j                           |
 | `ui`       | Componentes y estilos del frontend                       |
 | `config`   | application.yml, Docker, configuración Spring            |
-| `test`     | Tests unitarios e integración (JUnit 5, Testcontainers)  |
+| `test`     | Tests unitarios e integración (JUnit 5, BD de pruebas)   |
 | `deps`     | Dependencias (pom.xml, package.json — versiones exactas) |
 | `docs`     | Documentación (README, `docs/`)                         |
 
