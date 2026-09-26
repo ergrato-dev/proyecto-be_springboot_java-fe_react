@@ -56,8 +56,8 @@ base de datos) y no solo la apariencia.
 | **Email (dev)** | Mailpit — captura SMTP local, UI en puerto 8025                             |
 | **Rate Limiting** | Bucket4j 8.x — límite por IP en endpoints de auth                        |
 | **Documentación API** | SpringDoc OpenAPI 2.8.9 (Swagger UI en `/swagger-ui.html`)         |
-| **Testing BE**  | JUnit 5 + MockMvc + PostgreSQL de pruebas (db-test) → 29 tests            |
-| **Testing FE**  | Vitest 4.1.3 + Testing Library React 16.3.2 → 37 tests (6 suites)         |
+| **Testing BE**  | JUnit 5 + MockMvc + PostgreSQL de pruebas (db-test) → 32 tests            |
+| **Testing FE**  | Vitest 4.1.3 + Testing Library React 16.3.2 → 42 tests (6 suites)         |
 | **Linting**     | Checkstyle (Java), ESLint 10 + Prettier 3.8.1 (TypeScript)                 |
 | **Build**       | Maven Wrapper (`./mvnw`) para BE, pnpm 11 para FE                          |
 
@@ -243,6 +243,9 @@ cd fe && pnpm dev
 ---
 
 ## 🧪 Testing
+
+> 🔎 Este proyecto tiene defectos reales documentados para practicar testing en clase:
+> [`docs/testing/hallazgos.md`](docs/testing/hallazgos.md).
 
 ### Backend
 
