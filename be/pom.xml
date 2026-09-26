@@ -159,6 +159,20 @@
 				<groupId>org.jacoco</groupId>
 				<artifactId>jacoco-maven-plugin</artifactId>
 				<version>0.8.14</version>
+				<!--
+				  ¿Qué? Se mide la lógica de negocio: controladores, servicios, seguridad,
+				  excepciones, entidades y DTOs.
+				  ¿Impacto? Quedan fuera el arranque (NnAuthSystemApplication), la configuración
+				  (config/**) y el adaptador de email (EmailService), que en los tests se
+				  reemplaza con @MockitoBean. Las exclusiones aplican al reporte y al check.
+				-->
+				<configuration>
+					<excludes>
+						<exclude>com/nn/auth/NnAuthSystemApplication.class</exclude>
+						<exclude>com/nn/auth/config/**</exclude>
+						<exclude>com/nn/auth/util/EmailService.class</exclude>
+					</excludes>
+				</configuration>
 				<executions>
 					<execution>
 						<goals>
@@ -171,6 +185,38 @@
 						<goals>
 							<goal>report</goal>
 						</goals>
+					</execution>
+					<!--
+					  ¿Qué? `./mvnw verify` falla si la cobertura baja del umbral.
+					  ¿Impacto? Líneas al 80%. Las ramas están en 62,9%: el umbral queda en la
+					  cobertura real redondeada hacia abajo (regla de trinquete) y solo sube,
+					  PR a PR, hasta el 80%.
+					-->
+					<execution>
+						<id>check</id>
+						<phase>verify</phase>
+						<goals>
+							<goal>check</goal>
+						</goals>
+						<configuration>
+							<rules>
+								<rule>
+									<element>BUNDLE</element>
+									<limits>
+										<limit>
+											<counter>LINE</counter>
+											<value>COVEREDRATIO</value>
+											<minimum>0.80</minimum>
+										</limit>
+										<limit>
+											<counter>BRANCH</counter>
+											<value>COVEREDRATIO</value>
+											<minimum>0.62</minimum>
+										</limit>
+									</limits>
+								</rule>
+							</rules>
+						</configuration>
 					</execution>
 				</executions>
 			</plugin>

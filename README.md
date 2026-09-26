@@ -59,7 +59,7 @@ base de datos) y no solo la apariencia.
 | **Testing BE**  | JUnit 5 + MockMvc + PostgreSQL de pruebas (db-test) → 29 tests            |
 | **Testing FE**  | Vitest 4.1.3 + Testing Library React 16.3.2 → 37 tests (6 suites)         |
 | **Linting**     | Checkstyle (Java), ESLint 10 + Prettier 3.8.1 (TypeScript)                 |
-| **Build**       | Maven Wrapper (`./mvnw`) para BE, pnpm 10 para FE                          |
+| **Build**       | Maven Wrapper (`./mvnw`) para BE, pnpm 11 para FE                          |
 
 ---
 
@@ -88,7 +88,7 @@ Antes de comenzar, asegúrate de tener instalado:
 ```bash
 # Opción recomendada — vía corepack (incluido con Node.js 16+)
 corepack enable
-corepack prepare pnpm@latest --activate
+corepack prepare pnpm@11.20.0 --activate
 
 # Alternativa — instalación independiente
 curl -fsSL https://get.pnpm.io/install.sh | sh -
