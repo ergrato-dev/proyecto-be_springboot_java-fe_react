@@ -8,6 +8,7 @@
 #
 # Uso:
 #   docker compose up -d          → Levantar servicios en background
+#   docker compose up -d --wait db-test → Solo la BD de tests (puerto 5433, desechable)
 #   docker compose down           → Detener y eliminar contenedores
 #   docker compose down -v        → Detener y eliminar contenedores + volúmenes (¡borra datos BD!)
 #   docker compose logs -f db     → Ver logs de la base de datos
@@ -37,13 +38,33 @@ services:
       start_period: 10s
     restart: unless-stopped
 
+  # ─── Base de Datos SOLO para tests ──────────────────────────────────────────
+  # ¿Qué? Segunda instancia de PostgreSQL, exclusiva para ./mvnw test y verify.
+  # ¿Para qué? Que los tests nunca corran sobre el servidor de desarrollo (nn_auth_db).
+  # ¿Impacto? Sin volumen: es desechable y cada `docker compose down` la deja vacía.
+  #           Flyway crea las tablas al arrancar los tests. TEST_DATABASE_URL apunta aquí.
+  db-test:
+    image: postgres:17-alpine
+    container_name: nn_auth_db_test
+    environment:
+      POSTGRES_USER: nn_user
+      POSTGRES_PASSWORD: nn_password
+      POSTGRES_DB: nn_auth_test
+    ports:
+      - "5433:5432"     # Puerto distinto al de la BD de desarrollo
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U nn_user -d nn_auth_test"]
+      interval: 2s
+      timeout: 5s
+      retries: 15
+
   # ─── Mailpit — Servidor SMTP de desarrollo ──────────────────────────────────
   # ¿Qué? Captura todos los emails enviados por el backend sin enviarlos realmente.
   # ¿Para qué? Ver los emails de verificación y recuperación de contraseña durante el desarrollo.
   # ¿Impacto? Sin Mailpit, los emails de prueba llegarían a cuentas reales o fallaran
   #           si no hay un servidor SMTP configurado.
   mailpit:
-    image: axllent/mailpit:latest
+    image: axllent/mailpit:v1.31.1
     container_name: nn_auth_mailpit
     ports:
       - "1025:1025"     # Puerto SMTP — Spring Boot Mail apunta aquí

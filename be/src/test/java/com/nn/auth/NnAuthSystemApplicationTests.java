@@ -32,7 +32,7 @@ class NnAuthSystemApplicationTests {
 	 * con un mensaje claro del bean problemático.
 	 */
 	@Test
-	@DisplayName("El contexto de Spring Boot carga correctamente con Testcontainers")
+	@DisplayName("El contexto de Spring Boot carga correctamente con la BD de pruebas")
 	void contextLoads() {
 		// Si llega aquí sin excepción, el contexto cargó correctamente
 	}

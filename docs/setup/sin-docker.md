@@ -293,20 +293,20 @@ curl http://localhost:8080/actuator/health
 
 ## Testing del Backend sin Docker
 
-Los tests del backend usan **Testcontainers** para levantar PostgreSQL — esto **sí requiere Docker**.
-
-Si no tienes Docker disponible, puedes ejecutar solo los tests que no usan la BD:
+Todos los tests del backend usan PostgreSQL real. Con Docker, la BD de pruebas es el servicio
+`db-test` (`docker compose up -d --wait db-test`). Sin Docker, crea en tu PostgreSQL local una
+BD **distinta** a la de desarrollo y apunta los tests a ella:
 
 ```bash
-# Ejecutar tests excluyendo los de integración (que requieren Docker)
-./mvnw test -Dgroups="unit"
+# Una BD solo para tests — nunca la de desarrollo
+createdb -U nn_user nn_auth_test
 
-# O ejecutar una clase específica sin Testcontainers
-./mvnw test -Dtest=JwtServiceTest
+export TEST_DATABASE_URL='jdbc:postgresql://localhost:5432/nn_auth_test?user=nn_user&password=nn_password'
+./mvnw test
 ```
 
-> Para ejecutar la suite completa de tests (`./mvnw test`) se necesita Docker.
-> Ver [con-docker.md](./con-docker.md) para la configuración con Docker.
+> Sin `TEST_DATABASE_URL`, el contexto de Spring no arranca y los tests se detienen antes de
+> conectarse. Ver [con-docker.md](./con-docker.md) para la configuración con Docker.
 
 ---
 

@@ -767,8 +767,8 @@ Esta tabla documenta las diferencias de comportamiento o implementación respect
 | Manejo de errores             | `HTTPException` (Python)              | `@ControllerAdvice` + excepciones Java       |
 | Migraciones BD                | Alembic (`alembic upgrade head`)      | Flyway (auto en startup, `V1__*.sql`)        |
 | Front VITE_API_URL            | `http://localhost:8000`               | `http://localhost:8080`                      |
-| Testing                       | pytest + httpx + TestClient           | JUnit 5 + MockMvc + Testcontainers           |
-| Contenedor de tests           | pytest (sin Docker)                   | Testcontainers (requiere Docker daemon)      |
+| Testing                       | pytest + httpx + TestClient           | JUnit 5 + MockMvc + PostgreSQL de pruebas    |
+| Contenedor de tests           | pytest (sin Docker)                   | Servicio db-test (docker compose, 5433)      |
 
 ### Compatibilidad de contratos API
 

@@ -108,7 +108,7 @@ public NombreResponse nombreEndpoint(@Valid @RequestBody NombreRequest request) 
 - Una clase de test por controller (`class AuthControllerTest`)
 - Casos mínimos: éxito, input inválido (422), no autenticado si aplica (401), error de negocio (400/409)
 - Usar `@SpringBootTest` + `MockMvc` o `@WebMvcTest` + mock de services
-- Usar Testcontainers para tests de integración con BD real
+- Usar la BD de pruebas (servicio db-test) para tests de integración con BD real
 - Referencia: [be/src/test/java/com/nn/auth/controller/AuthControllerTest.java](../../../be/src/test/java/com/nn/auth/controller/AuthControllerTest.java)
 
 ```java

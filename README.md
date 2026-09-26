@@ -56,7 +56,7 @@ base de datos) y no solo la apariencia.
 | **Email (dev)** | Mailpit — captura SMTP local, UI en puerto 8025                             |
 | **Rate Limiting** | Bucket4j 8.x — límite por IP en endpoints de auth                        |
 | **Documentación API** | SpringDoc OpenAPI 2.8.9 (Swagger UI en `/swagger-ui.html`)         |
-| **Testing BE**  | JUnit 5 + MockMvc + Testcontainers → 29 tests                              |
+| **Testing BE**  | JUnit 5 + MockMvc + PostgreSQL de pruebas (db-test) → 29 tests            |
 | **Testing FE**  | Vitest 4.1.3 + Testing Library React 16.3.2 → 37 tests (6 suites)         |
 | **Linting**     | Checkstyle (Java), ESLint 10 + Prettier 3.8.1 (TypeScript)                 |
 | **Build**       | Maven Wrapper (`./mvnw`) para BE, pnpm 10 para FE                          |
@@ -247,9 +247,13 @@ cd fe && pnpm dev
 ### Backend
 
 ```bash
-cd be
+# BD de pruebas desechable (una vez por sesión de trabajo)
+docker compose up -d --wait db-test
 
-# Ejecutar todos los tests (requiere Docker para levantar PostgreSQL con Testcontainers)
+cd be
+export TEST_DATABASE_URL='jdbc:postgresql://localhost:5433/nn_auth_test?user=nn_user&password=nn_password'
+
+# Ejecutar todos los tests
 ./mvnw test
 
 # Ejecutar con reporte de cobertura (JaCoCo)
@@ -262,8 +266,9 @@ cd be
 ./mvnw test -Dtest=AuthControllerTest
 ```
 
-> ⚠️ Los tests del backend usan **Testcontainers** para levantar una instancia efímera
-> de PostgreSQL. Se requiere que Docker esté corriendo durante la ejecución de tests.
+> ⚠️ Los tests del backend usan una **BD exclusiva** (`db-test`, puerto 5433), nunca la de
+> desarrollo. La URL llega por `TEST_DATABASE_URL`: sin ella, el contexto de Spring no arranca
+> y los tests se detienen antes de conectarse.
 
 ### Frontend
 

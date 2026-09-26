@@ -3,7 +3,7 @@
  * Descripción: Tests de integración para todos los endpoints de AuthController.
  * ¿Para qué? Verificar el comportamiento completo del sistema de autenticación —
  *            desde la petición HTTP hasta la BD — sin mocks de infraestructura.
- *            Testcontainers provee PostgreSQL real, MockMvc simula el cliente HTTP.
+ *            La BD de pruebas (db-test) es PostgreSQL real, MockMvc simula el cliente HTTP.
  * ¿Impacto? Sin estos tests, los errores de integración (BD, validaciones, flujos)
  *           solo se detectarían en producción. Con ellos, se detectan en cada commit.
  *           Cobertura mínima esperada: 80% en AuthService y AuthController.
@@ -33,10 +33,10 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -55,7 +55,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  * ¿Para qué? Testear el comportamiento end-to-end: validaciones Bean
  * Validation,
  * lógica de AuthService, persistencia en BD y respuestas HTTP.
- * ¿Impacto? @MockBean sobre EmailService evita envíos reales en tests —
+ * ¿Impacto? @MockitoBean sobre EmailService evita envíos reales en tests —
  * el servicio de email se reemplaza por un spy de Mockito sin efectos.
  */
 @SpringBootTest
@@ -86,14 +86,14 @@ class AuthControllerTest {
   private JwtService jwtService;
 
   /**
-   * ¿Qué? MockBean reemplaza EmailService por un spy de Mockito.
+   * ¿Qué? MockitoBean reemplaza EmailService por un spy de Mockito.
    * ¿Para qué? Evitar que los tests intenten conectar a Mailpit (no disponible en
    * CI).
    * ¿Impacto? Los tests verifican el flujo de negocio sin depender de
    * infraestructura
    * de email — tests más rápidos y deterministas.
    */
-  @MockBean
+  @MockitoBean
   private EmailService emailService;
 
   // -------------------------------------------------------------------------
